@@ -28,16 +28,14 @@ function App() {
   useEffect(() => {
     let result = newsData;
 
-    // Category filter
     if (activeCategory !== 'all') {
       result = result.filter(item => item.category === activeCategory);
     }
 
-    // Search filter
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase();
       result = result.filter(item =>
-        item.title.toLowerCase().includes(term) ||
+        item.title.toLowerCase().includes(term) || 
         item.desc.toLowerCase().includes(term)
       );
     }
@@ -45,76 +43,93 @@ function App() {
     setFilteredNews(result);
   }, [searchTerm, activeCategory]);
 
-  const refreshPage = () => {
-    window.location.reload();
-  };
+  const refreshPage = () => window.location.reload();
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
       {/* Header */}
-      <header className="bg-[#0f0f0f] border-b-4 border-[#a8e6cf] sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-6">
-          <h1 className="text-5xl font-bold tracking-tighter">Game-M</h1>
-          <p className="text-lg text-gray-400 mt-2">Latest Video Game News</p>
+      <header className="bg-[#0f0f0f] border-b-4 border-[#a8e6cf] sticky top-0 z-50 shadow-lg">
+        <div className="max-w-6xl mx-auto px-6 py-7">
+          <h1 className="text-5xl font-bold tracking-tighter text-white drop-shadow-sm">
+            Game-M
+          </h1>
+          <p className="text-lg text-gray-400 mt-2">Fresh Gaming News • Every Day</p>
         </div>
       </header>
 
       {/* Controls */}
-      <div className="max-w-6xl mx-auto px-6 pt-6 pb-4 bg-[#111111]">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <input
-            type="text"
-            placeholder="Search news (GTA, Mobile Legends...)"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 bg-[#1f1f1f] border-2 border-gray-700 rounded-2xl px-6 py-4 text-lg focus:border-[#a8e6cf] focus:outline-none"
-          />
-          <button
-            onClick={refreshPage}
-            className="bg-[#1f1f1f] hover:bg-[#2a2a2a] border-2 border-gray-700 hover:border-[#a8e6cf] px-8 py-4 rounded-2xl font-semibold flex items-center gap-2 whitespace-nowrap"
-          >
-            🔄 Refresh
-          </button>
+      <div className="sticky top-[73px] z-40 bg-[#111111] border-b border-gray-800">
+        <div className="max-w-6xl mx-auto px-6 py-5">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <input
+              type="text"
+              placeholder="Search news (GTA, Elden Ring, Mobile Legends...)"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="flex-1 bg-[#1a1a1a] border border-gray-700 focus:border-[#a8e6cf] rounded-2xl px-6 py-4 text-lg placeholder-gray-500 focus:outline-none transition-all"
+            />
+            <button
+              onClick={refreshPage}
+              className="bg-[#1a1a1a] hover:bg-[#242424] border border-gray-700 hover:border-[#a8e6cf] px-8 py-4 rounded-2xl font-semibold flex items-center gap-2 transition-all active:scale-95"
+            >
+              🔄 Refresh
+            </button>
+          </div>
+        </div>
+
+        {/* Categories */}
+        <div className="max-w-6xl mx-auto px-6 pb-5 flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
+          {['all', 'pc', 'mobile', 'esports'].map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-7 py-3 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                activeCategory === cat 
+                  ? 'bg-[#a8e6cf] text-black shadow-md' 
+                  : 'bg-[#1f1f1f] text-gray-300 hover:bg-gray-700'
+              }`}
+            >
+              {cat === 'all' ? 'All News' : cat.charAt(0).toUpperCase() + cat.slice(1)}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Categories */}
-      <div className="max-w-6xl mx-auto px-6 py-4 bg-[#111111] flex gap-3 flex-wrap">
-        {['all', 'pc', 'mobile', 'esports'].map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
-              activeCategory === cat 
-                ? 'bg-[#a8e6cf] text-black font-semibold' 
-                : 'bg-[#1f1f1f] text-gray-300 hover:bg-gray-700'
-            }`}
-          >
-            {cat === 'all' ? 'All' : cat.charAt(0).toUpperCase() + cat.slice(1)}
-          </button>
-        ))}
-      </div>
-
       {/* News Grid */}
-      <main className="max-w-6xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-6 py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {filteredNews.map((news, index) => (
             <div
               key={news.id}
-              className="news-card bg-[#1a1a1a] rounded-3xl overflow-hidden shadow-2xl transition-all duration-700 hover:-translate-y-4 hover:shadow-[0_30px_60px_rgba(168,230,207,0.2)]"
-              style={{ animationDelay: `${index * 80}ms` }}
+              className="group bg-[#161616] rounded-3xl overflow-hidden shadow-2xl hover:shadow-[0_30px_70px_rgba(168,230,207,0.15)] transition-all duration-700 hover:-translate-y-3"
+              style={{ animationDelay: `${index * 90}ms` }}
             >
-              <img 
-                src={news.image} 
-                alt={news.title}
-                className="w-full h-56 object-cover"
-              />
-              <div className="p-6">
-                <p className="text-sm text-gray-500 mb-3">{news.date}</p>
-                <h2 className="text-2xl font-semibold leading-tight mb-4">{news.title}</h2>
-                <p className="text-gray-300 leading-relaxed">{news.desc}</p>
-                <a href="#" className="inline-block mt-6 text-[#a8e6cf] font-semibold hover:underline">
-                  Read full story →
+              <div className="relative">
+                <img 
+                  src={news.image} 
+                  alt={news.title}
+                  className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute top-4 right-4 bg-black/70 text-xs px-3 py-1 rounded-full">
+                  {news.category.toUpperCase()}
+                </div>
+              </div>
+              
+              <div className="p-7">
+                <p className="text-sm text-gray-500 mb-3 tracking-wide">{news.date}</p>
+                <h2 className="text-2xl font-semibold leading-tight mb-5 group-hover:text-[#a8e6cf] transition-colors">
+                  {news.title}
+                </h2>
+                <p className="text-gray-300 leading-relaxed text-[17px]">
+                  {news.desc}
+                </p>
+                
+                <a 
+                  href="#" 
+                  className="inline-flex items-center mt-7 text-[#a8e6cf] font-semibold hover:text-white transition-colors"
+                >
+                  Read full story 
+                  <span className="ml-2 text-xl">→</span>
                 </a>
               </div>
             </div>
@@ -122,12 +137,15 @@ function App() {
         </div>
 
         {filteredNews.length === 0 && (
-          <p className="text-center text-gray-400 py-20 text-xl">No news found matching your search.</p>
+          <div className="text-center py-24">
+            <p className="text-2xl text-gray-400">No matching news found</p>
+            <p className="text-gray-500 mt-3">Try different keywords or clear the search</p>
+          </div>
         )}
       </main>
 
-      <footer className="text-center py-12 text-gray-500 text-sm border-t border-gray-800">
-        Game-M • Built in Termux • Nairobi
+      <footer className="text-center py-16 text-gray-500 text-sm border-t border-gray-900">
+        Game-M • Built with ❤️ in Termux • Nairobi, Kenya
       </footer>
     </div>
   );
